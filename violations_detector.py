@@ -5,11 +5,15 @@ from datetime import datetime
 from ultralytics import YOLO
 
 # Set Tesseract OCR path
-pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
-
+pytesseract.pytesseract.tesseract_cmd = "tesseract"
 # Load YOLO model
-model = YOLO("yolov8n.pt")  # replace with your YOLO model path
+model = None
 
+def get_model():
+    global model
+    if model is None:
+        model = YOLO("yolov8n.pt")
+    return model
 seen_plates = set()
 
 def boxes_overlap(box1, box2, threshold=0.3):
@@ -108,7 +112,7 @@ def process_file(path, result_folder):
     if ext in ['.jpg', '.png', '.jpeg']:
         img = cv2.imread(path)
         img = cv2.resize(img, (640, 480))
-        results = model.predict(img)
+        results = get_model().predict(img)
         frame, violations = draw_violations(img, results)
         out_file = os.path.join(result_folder, os.path.basename(path))
         cv2.imwrite(out_file, frame)
@@ -128,7 +132,7 @@ def process_file(path, result_folder):
 
             if frame_count % skip_frames == 0:
                 frame = cv2.resize(frame, (640, 480))
-                results = model.predict(frame)
+                results = get_model().predict(frame)
                 frame, violations = draw_violations(frame, results)
 
                 if violations:
