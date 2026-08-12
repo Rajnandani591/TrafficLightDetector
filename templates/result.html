@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Detection Results</title>
+</head>
+<body>
+    <h2>Violation Results</h2>
+    {% for file in results %}
+        <img src="{{ file }}" width="600"><br><br>
+    {% endfor %}
+
+    <h3>Violation Info:</h3>
+    <ul>
+    {% for v in info %}
+        <li>{{ v.rule }} | {{ v.time }}</li>
+    {% endfor %}
+    </ul>
+
+    <a href="/">Go Back</a>
+</body>
+</html>
